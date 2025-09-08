@@ -1,7 +1,7 @@
 // src/app/models/employee.model.ts
 
 export interface User {
-  id:string;
+  id?:string;
   // Arabic names
   arFirst: string;
   arSecond?: string;

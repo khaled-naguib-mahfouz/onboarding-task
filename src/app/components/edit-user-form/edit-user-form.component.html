@@ -1,4 +1,4 @@
-<form class="employee-form" [formGroup]="employeeForm" dir="rtl" (ngSubmit)="onSubmit()">
+<form class="employee-form" [formGroup]="form" dir="rtl" (ngSubmit)="onSubmit()">
   <!-- Arabic Names -->
   <div class="name-section">
     <mat-form-field>
@@ -50,22 +50,21 @@
     <mat-form-field>
   <mat-label>البريد الإلكتروني</mat-label>
   <input matInput formControlName="email">
-  <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
+   <mat-error *ngIf="form.get('email')?.hasError('email')">
     البريد الإلكتروني غير صالح
   </mat-error>
-  <mat-error *ngIf="employeeForm.get('email')?.hasError('emailExists')">
+  <mat-error *ngIf="form.get('email')?.hasError('emailExists')">
     البريد الإلكتروني مسجل بالفعل
   </mat-error>
 </mat-form-field>
-  <mat-form-field>
-  <mat-label>كود الدولة</mat-label>
-  <mat-select formControlName="countryCode">
-    <mat-option *ngFor="let opt of formSettings?.countryCodes; trackBy: trackByValue"
-                [value]="opt.value">
-      {{ opt.label }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    <mat-form-field>
+      <mat-label>كود الدولة</mat-label>
+      <mat-select formControlName="countryCode">
+        <mat-option value="SAU" >SAU 966</mat-option>
+        <mat-option value="EGY">EGY 20</mat-option>
+        <mat-option value="UAE">UAE 971</mat-option>
+      </mat-select>
+    </mat-form-field>
 
     <mat-form-field>
       <mat-label>رقم الجوال</mat-label>
@@ -99,15 +98,15 @@
       </mat-select>
     </mat-form-field>
 
-  <mat-form-field>
-  <mat-label>الحالة الإجتماعية</mat-label>
-  <mat-select formControlName="maritalStatus">
-    <mat-option *ngFor="let opt of formSettings?.maritalStatuses; trackBy: trackByValue"
-                [value]="opt.value">
-      {{ opt.label }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    <mat-form-field>
+      <mat-label>الحالة الإجتماعية</mat-label>
+      <mat-select formControlName="maritalStatus">
+        <mat-option value="single">أعزب</mat-option>
+        <mat-option value="married">متزوج</mat-option>
+        <mat-option value="divorced">مطلق</mat-option>
+        <mat-option value="widow">أرمل</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <!-- Address -->
