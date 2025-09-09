@@ -11,6 +11,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { FormSettings } from '../../models/formSettings.model';
 import { emailExistsValidator } from '../../validators/custom-validators';
 import { CommonModule, NgIf } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../../services/snackbar.service';
 @Component({
   selector: 'app-user-form',
   imports: [MatError,MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, ReactiveFormsModule, MatOptionModule, CommonModule],
@@ -22,12 +24,13 @@ import { CommonModule, NgIf } from '@angular/common';
   export class UserFormComponent implements OnInit  {
   formSettings: FormSettings | undefined;
 
-    constructor(private userService: UserService, private http: HttpClient) {}
+    constructor(private userService: UserService, private http: HttpClient, private snackBarService: SnackbarService) {}
 employeeForm!: FormGroup;
 trackByValue = (_: number, option: { value: string }) => option.value;
 
-
+    
     ngOnInit() {
+
 this.employeeForm = new FormGroup({
       // Arabic names
       arFirst: new FormControl('', { validators: [Validators.required] }),
@@ -79,16 +82,16 @@ this.employeeForm = new FormGroup({
       console.log(newUser);
       this.userService.addUser(newUser).subscribe({
         next: (response) => {
-          alert('User added successfully!');
+            this.snackBarService.showSuccess('User added successfully!');
           this.employeeForm.reset();
         },
         error: (err) => {
           console.error('Error adding user:', err);
-          alert('Failed to add user');
+          this.snackBarService.showError('Failed to add user');
         }
       });
     } else {
-      alert('Please fill in required fields');
+      this.snackBarService.showError('Please fill in required fields');
     }
   }
 }
