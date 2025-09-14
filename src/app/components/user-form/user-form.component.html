@@ -60,7 +60,7 @@
   <mat-form-field>
   <mat-label>كود الدولة</mat-label>
   <mat-select formControlName="countryCode">
-    <mat-option *ngFor="let opt of formSettings?.countryCodes; trackBy: trackByValue"
+    <mat-option *ngFor="let opt of formSettings; trackBy: trackByValue"
                 [value]="opt.value">
       {{ opt.label }}
     </mat-option>
@@ -102,10 +102,9 @@
   <mat-form-field>
   <mat-label>الحالة الإجتماعية</mat-label>
   <mat-select formControlName="maritalStatus">
-    <mat-option *ngFor="let opt of formSettings?.maritalStatuses; trackBy: trackByValue"
-                [value]="opt.value">
-      {{ opt.label }}
-    </mat-option>
+    <mat-option value = "single">أعزب</mat-option>
+        <mat-option value = "married">متزوج</mat-option>
+
   </mat-select>
 </mat-form-field>
   </div>

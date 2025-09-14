@@ -57,14 +57,15 @@
     البريد الإلكتروني مسجل بالفعل
   </mat-error>
 </mat-form-field>
-    <mat-form-field>
-      <mat-label>كود الدولة</mat-label>
-      <mat-select formControlName="countryCode">
-        <mat-option value="SAU" >SAU 966</mat-option>
-        <mat-option value="EGY">EGY 20</mat-option>
-        <mat-option value="UAE">UAE 971</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <mat-form-field>
+  <mat-label>كود الدولة</mat-label>
+  <mat-select formControlName="countryCode">
+    <mat-option *ngFor="let opt of formSettings; trackBy: trackByValue"
+                [value]="opt.value">
+      {{ opt.label }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
     <mat-form-field>
       <mat-label>رقم الجوال</mat-label>

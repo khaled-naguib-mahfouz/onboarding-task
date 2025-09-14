@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -10,6 +10,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { uniqueEmailExceptSelf } from '../../validators/custom-validators';
 import { CommonModule, NgIf } from '@angular/common';
+import { FormSettings } from '../../models/FormSettings.model';
+import { SnackbarService } from '../../services/snackbar.service';
 @Component({
   selector: 'app-edit-user-form',
   imports: [CommonModule,
@@ -18,7 +20,7 @@ import { CommonModule, NgIf } from '@angular/common';
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    MatDatepickerModule,
+    MatDatepickerModule
    
   ],
 
@@ -26,18 +28,23 @@ import { CommonModule, NgIf } from '@angular/common';
   styleUrl: './edit-user-form.component.css',
    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditUserFormComponent {
+export class EditUserFormComponent implements OnInit {
 user!: User;
   private originalEmail = '';
   private userId!: string;
   private originalUser!: User; 
   form!: FormGroup;
+  formSettings: FormSettings[] = [];
+  
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private users: UserService
+    private userService: UserService,
+    private snackBarService: SnackbarService
   ) {
+
+
     this.user = this.route.snapshot.data['user'] as User;
     this.originalEmail = (this.user?.email || '').toLowerCase();
     this.userId = String(this.user.id);
@@ -61,7 +68,7 @@ this.originalUser = { ...rest };
         this.user?.email || '',
         { 
           validators: [Validators.required, Validators.email],
-          asyncValidators: [uniqueEmailExceptSelf(this.users, this.originalEmail)],
+          asyncValidators: [uniqueEmailExceptSelf(this.userService, this.originalEmail)],
           updateOn: 'blur'
         }
       ),
@@ -80,21 +87,32 @@ this.originalUser = { ...rest };
       addressEn: new FormControl(this.user?.addressEn || ''),
     });
   }
+  ngOnInit(): void {
+    this.userService.getFormSettings().subscribe({
+    next: (settings: FormSettings[]) => {
+      this.formSettings = settings;
+      console.log(this.formSettings);
+    },
+    error: (err: any) => console.error('Error loading form settings:', err)
+  });  }
+
+  trackByValue = (_: number, option: { value: string }) => option.value;
+
  onSubmit() {
     if (this.form.invalid) return;
     const payload = this.form.getRawValue() as User;
     const noChanges = JSON.stringify(this.originalUser) == JSON.stringify(payload);
     if (noChanges) {
-      alert('No changes detected');
+      this.snackBarService.showError('No changes detected');
       return;
     }
-    this.users.updateUser(this.userId, payload).subscribe({
+    this.userService.updateUser(this.userId, payload).subscribe({
       next: () => {
-        alert('User updated successfully!');
+        this.snackBarService.showSuccess('User updated successfully!');
 window.location.reload();  },
       error: (e) => {
         console.error(e);
-        alert('Failed to update user');
+        this.snackBarService.showError('Failed to update user');
       }
     });
   }

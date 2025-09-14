@@ -8,7 +8,7 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { MatOptionModule } from '@angular/material/core';
-import { FormSettings } from '../../models/formSettings.model';
+import { FormSettings } from '../../models/FormSettings.model';
 import { emailExistsValidator } from '../../validators/custom-validators';
 import { CommonModule, NgIf } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,7 +22,7 @@ import { SnackbarService } from '../../services/snackbar.service';
   
 })
   export class UserFormComponent implements OnInit  {
-  formSettings: FormSettings | undefined;
+formSettings: FormSettings[] = [];
 
     constructor(private userService: UserService, private http: HttpClient, private snackBarService: SnackbarService) {}
 employeeForm!: FormGroup;
@@ -30,6 +30,13 @@ trackByValue = (_: number, option: { value: string }) => option.value;
 
     
     ngOnInit() {
+      this.userService.getFormSettings().subscribe({
+    next: (settings: FormSettings[]) => {
+      this.formSettings = settings;
+      console.log(this.formSettings);
+    },
+    error: (err: any) => console.error('Error loading form settings:', err)
+  });
 
 this.employeeForm = new FormGroup({
       // Arabic names
@@ -66,13 +73,7 @@ this.employeeForm = new FormGroup({
     });
 
       
-        this.userService.getFormSettings().subscribe({
-    next: (settings: FormSettings) => {
-      this.formSettings = settings;
-      console.log(this.formSettings);
-    },
-    error: (err: any) => console.error('Error loading form settings:', err)
-  });
+        
 }
  
 
